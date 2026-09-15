@@ -96,23 +96,6 @@
   .card {
     position: relative;
   }
-  .card .deleteBtn {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    background: rgba(200,0,0,0.85);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    width: 26px;
-    height: 26px;
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
-  }
-  .card .deleteBtn:hover {
-    background: rgba(255,0,0,0.95);
-  }
 </style>
 </head>
 <body>
@@ -167,17 +150,7 @@ async function loadImages() {
       imageEl.alt = img.id;
       imageEl.onclick = () => openLightbox(img.url);
 
-      const delBtn = document.createElement('button');
-      delBtn.className = 'deleteBtn';
-      delBtn.textContent = '✕';
-      delBtn.title = 'Delete karo';
-      delBtn.onclick = (e) => {
-        e.stopPropagation();
-        deleteImage(img.id, card);
-      };
-
       card.appendChild(imageEl);
-      card.appendChild(delBtn);
       gridEl.appendChild(card);
     });
 
@@ -246,29 +219,6 @@ async function uploadImage() {
     uploadStatus.textContent = 'Connection error — upload nahi ho paya.';
   } finally {
     uploadBtn.disabled = false;
-  }
-}
-
-async function deleteImage(id, cardEl) {
-  const confirmDelete = confirm('Kya aap ye image delete karna chahte hain?');
-  if (!confirmDelete) return;
-
-  try {
-    const res = await fetch(API_BASE + '/images/' + encodeURIComponent(id), {
-      method: 'DELETE'
-    });
-    const data = await res.json();
-
-    if (!res.ok || data.error) {
-      alert('Delete nahi ho paya: ' + (data.error || 'Unknown error'));
-      return;
-    }
-
-    cardEl.remove();
-    totalLoaded -= 1;
-    document.getElementById('status').textContent = totalLoaded + ' images loaded';
-  } catch (err) {
-    alert('Connection error — delete nahi ho paya.');
   }
 }
 
